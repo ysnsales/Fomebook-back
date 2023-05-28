@@ -14,6 +14,19 @@ export async function createPost(req, res){
 }
    catch (err) {
     res.status(500).send(err.message);
+}
 };
+
+export async function getUserPosts(req, res){
+    const user_email = res.locals.session.user_email;
+
+    try {
+        const posts = await db.query(`SELECT * from posts WHERE user_email = $1;`, [user_email]);
+        res.status(200).send(posts.rows)
+
+    }
+    catch (err){
+        res.status(500).send(err.message);
+    }
 
 }
