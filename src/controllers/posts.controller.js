@@ -21,7 +21,22 @@ export async function getUserPosts(req, res){
     const user_email = res.locals.session.user_email;
 
     try {
-        const posts = await db.query(`SELECT * from posts WHERE user_email = $1;`, [user_email]);
+        const posts = await db.query(`SELECT * FROM posts WHERE user_email = $1;`, [user_email]);
+        res.status(200).send(posts.rows)
+
+    }
+    catch (err){
+        res.status(500).send(err.message);
+    }
+
+};
+
+export async function getPostsById(req, res){
+    const {id} = req.params;
+    try {
+        const user = await db.query(`SELECT * FROM users WHERE id = $1;`,[id]);
+        const user_email = user.rows[0].email;
+        const posts = await db.query(`SELECT * FROM posts WHERE user_email = $1;`, [user_email]);
         res.status(200).send(posts.rows)
 
     }

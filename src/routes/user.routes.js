@@ -7,3 +7,5 @@ const userRouter = Router();
 userRouter.get("/followers", authValidation, getFollowers);
 userRouter.get("/following", authValidation, getFollowing);
 userRouter.post("/following", authValidation, follow);
+
+export default userRouter;
