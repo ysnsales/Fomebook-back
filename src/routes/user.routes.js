@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { follow, getFollowers, getFollowing } from "../controllers/user.controller.js";
+import { follow, getFollowers, getFollowing} from "../controllers/user.controller.js";
 import { authValidation } from "../middlewares/authValidation.middleware.js";
 
 const userRouter = Router();
