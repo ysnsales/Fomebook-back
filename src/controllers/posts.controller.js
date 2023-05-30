@@ -46,29 +46,49 @@ export async function getPostsById(req, res){
 
 };
 
-export async function like(req, res){
+export async function addLike(req, res){
     const {id} = req.params;
 
   try {
-    // Consulta o post com o ID fornecido
     const post = await db.query('SELECT * FROM posts WHERE id = $1', [id]);
 
-    // Verifica se o post existe
     if (post.rows.length === 0) {
       return res.status(404).json({ error: 'Post not found' });
     }
 
-    // Obtém o número atual de likes
     let currentLikes = post.rows[0].likes;
 
-    // Incrementa o número de likes
     currentLikes++;
 
-    // Atualiza o número de likes no banco de dados
     await db.query('UPDATE posts SET likes = $1 WHERE id = $2', [currentLikes, id]);
 
-    // Retorna a resposta de sucesso
     res.sendStatus(200);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export async function removeLike(req, res) {
+  const { id } = req.params;
+
+  try {
+    const post = await db.query('SELECT * FROM posts WHERE id = $1', [id]);
+    if (post.rows.length === 0) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    let currentLikes = post.rows[0].likes;
+
+   
+    if (currentLikes > 0) {
+      currentLikes--;
+
+      await db.query('UPDATE posts SET likes = $1 WHERE id = $2', [currentLikes, id]);
+
+      res.sendStatus(200);
+    } else {
+      return res.status(400).json({ error: 'Cannot remove like. Likes count is already zero.' });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
